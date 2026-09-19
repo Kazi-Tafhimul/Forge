@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const { userHandler, userHandlerById } = require("./handlers");
+
+
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
 
@@ -10,7 +12,32 @@ function router(request, response) {
     });
 
     response.end("Welcome to Forge");
-  } else if (request.method === "GET" && url.pathname === "/index.html") {
+  }
+  else if(request.method === "GET" && url.pathname === "/js/main.js"){
+    const pathName = path.join(__dirname, "..", "public", "js", "main.js");
+     fs.readFile(pathName, (error, data) => {
+      if (error) {
+        if (error.code === "ENOENT") {
+          response.writeHead(404, {
+            "Content-Type": "text/html",
+          });
+          response.end("No file found");
+        } else {
+          response.writeHead(500, {
+            "Content-Type": "text/html",
+          });
+          response.end("Server error");
+        }
+        return;
+      } else {
+        response.writeHead(200, {
+          "Content-Type": "text/javascript",
+        });
+        response.end(data);
+      }
+    });
+  }
+   else if (request.method === "GET" && url.pathname === "/index.html") {
     const pathName = path.join(__dirname, "..", "public", "index.html");
     fs.readFile(pathName, (error, data) => {
       if (error) {

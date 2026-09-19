@@ -1,11 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Forge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    hi there
+
+<body class="min-h-screen bg-gray-50 p-6 text-gray-900">
+
+    <header class="mb-8">
+        <h1 class="text-2xl font-semibold">Forge</h1>
+        <p class="mt-1 text-sm text-gray-500">A full-stack collaboration platform</p>
+    </header>
+
+    <main class="max-w-3xl space-y-8">
+
+        <section>
+            <p class="para mb-3 text-lg">Welcome Forge</p>
+
+            <button id="btn" class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+                Click here
+            </button>
+        </section>
+
+        <nav class="flex gap-5 border-b border-gray-200 pb-3 text-sm">
+            <a href="/" class="text-gray-600 hover:text-gray-900">Home</a>
+            <a href="/users" class="text-gray-600 hover:text-gray-900">Users</a>
+            <a href="/projects" class="text-gray-600 hover:text-gray-900">Projects</a>
+        </nav>
+
+        <section id="app" class="rounded-md border border-gray-200 bg-white p-4">
+        </section>
+
+        <section class="max-w-md">
+            <h2 class="mb-3 text-lg font-medium">Create User</h2>
+
+            <form id="normal-form" action="/users" method="post" class="space-y-4">
+
+                <div>
+                    <label for="username" class="mb-1 block text-sm font-medium text-gray-700">
+                        Username
+                    </label>
+
+                    <input type="text" id="username" name="username"
+                        class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500">
+                </div>
+
+                <button type="submit"
+                    class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+                    Submit
+                </button>
+
+            </form>
+        </section>
+
+    </main>
+
+    <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
