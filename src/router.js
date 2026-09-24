@@ -1,7 +1,12 @@
 const fs = require("fs");
 const path = require("path");
-const { userHandler, userHandlerById } = require("./handlers");
-
+const {
+  userHandler,
+  userHandlerById,
+  projectHandler,
+  workspaceProjectCounts,
+  createWorkSpace,
+} = require("./handlers");
 
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
@@ -12,10 +17,9 @@ function router(request, response) {
     });
 
     response.end("Welcome to Forge");
-  }
-  else if(request.method === "GET" && url.pathname === "/js/main.js"){
+  } else if (request.method === "GET" && url.pathname === "/js/main.js") {
     const pathName = path.join(__dirname, "..", "public", "js", "main.js");
-     fs.readFile(pathName, (error, data) => {
+    fs.readFile(pathName, (error, data) => {
       if (error) {
         if (error.code === "ENOENT") {
           response.writeHead(404, {
@@ -36,8 +40,7 @@ function router(request, response) {
         response.end(data);
       }
     });
-  }
-   else if (request.method === "GET" && url.pathname === "/index.html") {
+  } else if (request.method === "GET" && url.pathname === "/index.html") {
     const pathName = path.join(__dirname, "..", "public", "index.html");
     fs.readFile(pathName, (error, data) => {
       if (error) {
@@ -67,11 +70,12 @@ function router(request, response) {
     const userId = parts[2];
     userHandlerById(request, response, userId);
   } else if (request.method === "GET" && url.pathname === "/projects") {
-    response.writeHead(200, {
-      "Content-Type": "text/plain",
-    });
-
-    response.end("Projects page");
+    projectHandler(request, response);
+  } else if (
+    request.method === "GET" &&
+    url.pathname === "/workspace-project-counts"
+  ) {
+    workspaceProjectCounts(request, response);
   } else if (request.method === "POST" && url.pathname === "/users") {
     const chunks = [];
     request.on("data", (chunk) => {
@@ -85,7 +89,10 @@ function router(request, response) {
       const result = JSON.parse(body);
       response.end(JSON.stringify(result));
     });
-  } else {
+  }else if(request.method === "POST" && url.pathname === "/workspaces"){
+    createWorkSpace(request, response);
+  }
+   else {
     response.writeHead(404, {
       "Content-Type": "text/plain",
     });
