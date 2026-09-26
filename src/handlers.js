@@ -1,13 +1,14 @@
+const getUsers = require("./data-access/users");
 const pool = require("./db");
 
 async function userHandler(request, response) {
   try {
-    const result = await pool.query("select * from users");
+   const result = await getUsers();
     response.writeHead(200, {
       "Content-Type": "application/json",
     });
 
-    response.end(JSON.stringify(result.rows));
+    response.end(JSON.stringify(result));
   } catch (error) {
     console.error(error);
     response.writeHead(500, {
