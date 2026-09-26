@@ -90,6 +90,7 @@ async function createWorkSpace(request, response) {
       client = await pool.connect();
 
       await client.query("BEGIN");
+      await client.query("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
       await client.query(
         "INSERT INTO workspaces (workspace_id, workname) VALUES ($1, $2)",
