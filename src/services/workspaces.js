@@ -1,4 +1,8 @@
 const pool = require("../db");
+const {
+  createWorkspace,
+  addWorkspaceMember,
+} = require("../data-access/workspaces");
 
 async function createWorkSpace(workspace_id, workname, user_id) {
   let client;
@@ -6,14 +10,9 @@ async function createWorkSpace(workspace_id, workname, user_id) {
     client = await pool.connect();
     await client.query("BEGIN");
     await client.query("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
-    await client.query(
-      "INSERT INTO workspaces (workspace_id, workname) VALUES ($1, $2)",
-      [workspace_id, workname],
-    );
-    await client.query(
-      "INSERT INTO workspace_members (user_id, workspace_id) VALUES ($1, $2)",
-      [user_id, workspace_id],
-    );
+    await createWorkspace(client, workspace_id, workname);
+
+    await addWorkspaceMember(client, user_id, workspace_id);
 
     await client.query("COMMIT");
 
