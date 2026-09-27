@@ -51,13 +51,13 @@ async function createWorkSpace(request, response) {
       const workname = data.workname;
       const user_id = data.user_id;
 
-      await createWorkspace(workspace_id, workname, user_id);
+     const workspace =  await createWorkspace(workspace_id, workname, user_id);
 
-      response.writeHead(200, {
-        "Content-Type": "text/plain",
+      response.writeHead(201, {
+        "Content-Type": "application/json",
       });
 
-      response.end("Workspace created successfully");
+     response.end(JSON.stringify(workspace));
     } catch (error) {
       handleError(error, response);
     }
