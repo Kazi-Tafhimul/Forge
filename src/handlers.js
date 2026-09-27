@@ -1,4 +1,5 @@
 const pool = require("./db");
+const createWorkspace = require("./services/workspaces");
 
 function userHandlerById(request, response, userId) {
   response.writeHead(200, {
@@ -57,8 +58,6 @@ async function createWorkSpace(request, response) {
   });
 
   request.on("end", async () => {
-    let client;
-
     try {
       const body = Buffer.concat(chunks).toString();
       const data = JSON.parse(body);
@@ -67,22 +66,7 @@ async function createWorkSpace(request, response) {
       const workname = data.workname;
       const user_id = data.user_id;
 
-      client = await pool.connect();
-
-      await client.query("BEGIN");
-      await client.query("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
-
-      await client.query(
-        "INSERT INTO workspaces (workspace_id, workname) VALUES ($1, $2)",
-        [workspace_id, workname],
-      );
-
-      await client.query(
-        "INSERT INTO workspace_members (user_id, workspace_id) VALUES ($1, $2)",
-        [user_id, workspace_id],
-      );
-
-      await client.query("COMMIT");
+      await createWorkspace(workspace_id, workname, user_id);
 
       response.writeHead(200, {
         "Content-Type": "text/plain",
@@ -91,10 +75,6 @@ async function createWorkSpace(request, response) {
       response.end("Workspace created successfully");
     } catch (error) {
       console.error(error);
-
-      if (client) {
-        await client.query("ROLLBACK");
-      }
 
       response.writeHead(500, {
         "Content-Type": "application/json",
@@ -105,10 +85,6 @@ async function createWorkSpace(request, response) {
           error: "Internal server error",
         }),
       );
-    } finally {
-      if (client) {
-        client.release();
-      }
     }
   });
 }
