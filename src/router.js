@@ -1,13 +1,15 @@
 const fs = require("fs");
 const path = require("path");
 const {
-
   userHandlerById,
-  projectHandler,
-  workspaceProjectCounts,
+
   createWorkSpace,
 } = require("./handlers");
 const userHandler = require("./controllers/users");
+const {
+  projectHandler,
+  workspaceProjectCounts,
+} = require("./controllers/projects");
 
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
@@ -90,10 +92,9 @@ function router(request, response) {
       const result = JSON.parse(body);
       response.end(JSON.stringify(result));
     });
-  }else if(request.method === "POST" && url.pathname === "/workspaces"){
+  } else if (request.method === "POST" && url.pathname === "/workspaces") {
     createWorkSpace(request, response);
-  }
-   else {
+  } else {
     response.writeHead(404, {
       "Content-Type": "text/plain",
     });
