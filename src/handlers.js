@@ -1,4 +1,5 @@
 const pool = require("./db");
+const handleError = require("./error-handler");
 const createWorkspace = require("./services/workspaces");
 
 function userHandlerById(request, response, userId) {
@@ -18,15 +19,7 @@ async function projectHandler(request, response) {
     });
     response.end(JSON.stringify(result.rows));
   } catch (error) {
-    console.error(error);
-    response.writeHead(500, {
-      "Content-Type": "application/json",
-    });
-    response.end(
-      JSON.stringify({
-        error: "Internal server error",
-      }),
-    );
+    handleError(error, response);
   }
 }
 async function workspaceProjectCounts(request, response) {
@@ -39,15 +32,7 @@ async function workspaceProjectCounts(request, response) {
     });
     response.end(JSON.stringify(result.rows));
   } catch (error) {
-    console.error(error);
-    response.writeHead(500, {
-      "Content-Type": "application/json",
-    });
-    response.end(
-      JSON.stringify({
-        error: "Internal server error",
-      }),
-    );
+    handleError(error, response);
   }
 }
 async function createWorkSpace(request, response) {
@@ -74,17 +59,7 @@ async function createWorkSpace(request, response) {
 
       response.end("Workspace created successfully");
     } catch (error) {
-      console.error(error);
-
-      response.writeHead(500, {
-        "Content-Type": "application/json",
-      });
-
-      response.end(
-        JSON.stringify({
-          error: "Internal server error",
-        }),
-      );
+      handleError(error, response);
     }
   });
 }
