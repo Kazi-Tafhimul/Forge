@@ -1,26 +1,5 @@
-const getUsers = require("./data-access/users");
 const pool = require("./db");
 
-async function userHandler(request, response) {
-  try {
-   const result = await getUsers();
-    response.writeHead(200, {
-      "Content-Type": "application/json",
-    });
-
-    response.end(JSON.stringify(result));
-  } catch (error) {
-    console.error(error);
-    response.writeHead(500, {
-      "Content-Type": "application/json",
-    });
-    response.end(
-      JSON.stringify({
-        error: "Internal server error",
-      }),
-    );
-  }
-}
 function userHandlerById(request, response, userId) {
   response.writeHead(200, {
     "Content-Type": "text/plain",
@@ -134,9 +113,8 @@ async function createWorkSpace(request, response) {
   });
 }
 module.exports = {
-  userHandler,
   userHandlerById,
   projectHandler,
   workspaceProjectCounts,
-  createWorkSpace
+  createWorkSpace,
 };

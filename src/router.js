@@ -1,12 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 const {
-  userHandler,
+
   userHandlerById,
   projectHandler,
   workspaceProjectCounts,
   createWorkSpace,
 } = require("./handlers");
+const userHandler = require("./controllers/users");
 
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
