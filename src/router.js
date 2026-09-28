@@ -10,6 +10,7 @@ const {
   projectHandler,
   workspaceProjectCounts,
 } = require("./controllers/projects");
+const registrationController = require("./controllers/registration");
 
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
@@ -79,21 +80,10 @@ function router(request, response) {
     url.pathname === "/workspace-project-counts"
   ) {
     workspaceProjectCounts(request, response);
-  } else if (request.method === "POST" && url.pathname === "/users") {
-    const chunks = [];
-    request.on("data", (chunk) => {
-      chunks.push(chunk);
-    });
-    request.on("end", () => {
-      const body = Buffer.concat(chunks).toString();
-      response.writeHead(200, {
-        "Content-Type": "application/json",
-      });
-      const result = JSON.parse(body);
-      response.end(JSON.stringify(result));
-    });
   } else if (request.method === "POST" && url.pathname === "/workspaces") {
     createWorkSpace(request, response);
+  } else if (request.method === "POST" && url.pathname === "/users") {
+    registrationController(request, response);
   } else {
     response.writeHead(404, {
       "Content-Type": "text/plain",
