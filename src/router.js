@@ -12,6 +12,7 @@ const {
 } = require("./controllers/projects");
 const registrationController = require("./controllers/registration");
 const loginController = require("./controllers/login");
+const logoutController = require("./controllers/logout");
 
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
@@ -89,6 +90,9 @@ function router(request, response) {
   else if(request.method === "POST" && url.pathname === "/login"){
     loginController(request, response)
   }
+  else if(request.method === "POST" && url.pathname === "/logout"){
+    logoutController(request, response);
+  } 
    else {
     response.writeHead(404, {
       "Content-Type": "text/plain",
