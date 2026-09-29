@@ -1,5 +1,6 @@
 const { findUserByEmail } = require("../data-access/users");
 const bcrypt = require("bcrypt");
+const { createSession } = require("../services/sessions");
 
 async function loginController(request, response) {
   const chunks = [];
@@ -33,6 +34,7 @@ async function loginController(request, response) {
         return;
       }
 
+
       const isValid = await bcrypt.compare(password, user.password_hash);
 
       if (!isValid) {
@@ -48,10 +50,14 @@ async function loginController(request, response) {
 
         return;
       }
+      const sessionId = await createSession(user.user_id);
+
 
       response.writeHead(200, {
         "Content-Type": "application/json",
+        "Set-Cookie": `sessionId=${sessionId}; HttpOnly; Path=/`
       });
+
 
       response.end(
         JSON.stringify({
