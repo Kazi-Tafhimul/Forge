@@ -11,6 +11,7 @@ const {
   workspaceProjectCounts,
 } = require("./controllers/projects");
 const registrationController = require("./controllers/registration");
+const loginController = require("./controllers/login");
 
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
@@ -84,7 +85,11 @@ function router(request, response) {
     createWorkSpace(request, response);
   } else if (request.method === "POST" && url.pathname === "/users") {
     registrationController(request, response);
-  } else {
+  }
+  else if(request.method === "POST" && url.pathname === "/login"){
+    loginController(request, response)
+  }
+   else {
     response.writeHead(404, {
       "Content-Type": "text/plain",
     });

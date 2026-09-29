@@ -12,7 +12,12 @@ async function createUser(username, email, passwordHash) {
 
   return result.rows[0];
 }
+async function findUserByEmail(email){
+  const result = await pool.query("select user_id, username, email, password_hash from users where email = $1", [email])
+  return result.rows[0]
+}
 module.exports = {
   getUsers,
   createUser,
+  findUserByEmail
 };
