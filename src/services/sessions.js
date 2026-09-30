@@ -1,18 +1,25 @@
 const crypto = require("crypto");
-const sessions = new Map();
-async function createSession(userId){
-    const sessionId = crypto.randomBytes(32).toString("hex");
-    sessions.set(sessionId,{
-        userId:userId
-    })
-    return sessionId;
-    
+const {newSession, findSession} = require("../data-access/sessions");
 
+
+async function createSession(userId) {
+  const sessionId = crypto.randomBytes(32).toString("hex");
+
+  await newSession(sessionId, userId);
+  return sessionId;
 }
- function getSession(sessionId){
-    const session = sessions.get(sessionId);
-    return session;
+async function getSession(sessionId) {
+  const session = await findSession(sessionId);
+  if (!session) {
+    return null;
+  }
+  if (new Date(session.expires_at) < new Date()) {
+    return null;
+  }
+
+  return session;
 }
 module.exports = {
-    createSession, getSession
+  createSession,
+  getSession,
 };
