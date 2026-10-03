@@ -17,4 +17,9 @@ async function findSession(sessionId) {
   }
   return result.rows[0];
 }
-module.exports = { newSession, findSession };
+async function deleteSession(sessionId){
+    await pool.query(`delete from sessions where session_id = $1`,
+        [sessionId]
+    )
+}
+module.exports = { newSession, findSession, deleteSession };

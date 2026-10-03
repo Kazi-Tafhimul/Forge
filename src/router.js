@@ -13,6 +13,7 @@ const {
 const registrationController = require("./controllers/registration");
 const loginController = require("./controllers/login");
 const logoutController = require("./controllers/logout");
+const authenticate = require("./middleware/authenticate");
 
 function router(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
@@ -76,7 +77,9 @@ function router(request, response) {
     const userId = parts[2];
     userHandlerById(request, response, userId);
   } else if (request.method === "GET" && url.pathname === "/projects") {
-    projectHandler(request, response);
+    authenticate(request, response, ()=>{
+      projectHandler(request, response)
+    })
   } else if (
     request.method === "GET" &&
     url.pathname === "/workspace-project-counts"

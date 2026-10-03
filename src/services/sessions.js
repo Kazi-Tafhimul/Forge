@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const {newSession, findSession} = require("../data-access/sessions");
+const {newSession, findSession, deleteSession} = require("../data-access/sessions");
 
 
 async function createSession(userId) {
@@ -19,7 +19,11 @@ async function getSession(sessionId) {
 
   return session;
 }
+async function destroySession(sessionId){
+    await deleteSession(sessionId);
+}
 module.exports = {
   createSession,
   getSession,
+  destroySession
 };

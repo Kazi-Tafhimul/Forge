@@ -1,6 +1,6 @@
-const { destroySession } = require("../services/sessions");
+const { getSession } = require("../services/sessions");
 
-async function logoutController(request, response) {
+async function authenticate(request, response, next) {
   const cookieHeader = request.headers.cookie;
 
   if (!cookieHeader) {
@@ -40,18 +40,26 @@ async function logoutController(request, response) {
     );
   }
 
-  await destroySession(sessionId);
+  const session = await getSession(sessionId);
 
-  response.writeHead(200, {
-    "Content-Type": "application/json",
-    "Set-Cookie": "sessionId=; Max-Age=0; HttpOnly; Path=/",
-  });
+  if (!session) {
+    response.writeHead(401, {
+      "Content-Type": "application/json",
+    });
 
-  response.end(
-    JSON.stringify({
-      message: "Logged out successfully",
-    }),
-  );
+    return response.end(
+      JSON.stringify({
+        error: "Unauthorized: Invalid or expired session",
+      }),
+    );
+  }
+
+  request.user = {
+    sessionId: session.session_id,
+    userId: session.user_id,
+  };
+
+  next();
 }
 
-module.exports = logoutController;
+module.exports = authenticate;
